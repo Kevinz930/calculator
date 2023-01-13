@@ -1,20 +1,113 @@
 let input = '0';
-let stack = [];
+let expression = '';
+let op1 = '';
+let op2 = '';
+let prev = '';
+let operator = '';
 
-// for(let i = 0; i <= 9; i++) {
-//   button = document.getElementById(i.toString());
-//   button.addEventListener('click', inputNumber(button.id));
-// }
+function mapButtons() {
+  for(let i = 0; i <= 9; i++) {
+    numBtns = document.getElementsByClassName('num');
+    Array.from(numBtns).forEach(numBtn => numBtn.addEventListener('click', inputNumber));
 
-button = document.getElementById('1');
-button.addEventListener('click', inputNumber(1));
+  }
 
-function inputNumber(i) {
+  opBtns = document.getElementsByClassName('operator');
+  Array.from(opBtns).forEach(opBtn => opBtn.addEventListener('click', pushOperator));
+
+  evalBtn = document.getElementById('=');
+  evalBtn.addEventListener('click', evalOperator);
+
+  signBtn = document.getElementById('sign');
+  signBtn.addEventListener('click', signOperator);
+
+  clearEntryBtn = document.getElementById('clear_entry');
+  clearEntryBtn.addEventListener('click', clearEntry);
+
+  clearGlobalBtn = document.getElementById('clear_global');
+  clearGlobalBtn.addEventListener('click', clearGlobal);
+
+  delBtn = document.getElementById('delete');
+  delBtn.addEventListener('click', backspace);
+}
+
+function inputNumber(e) {
+  i = e.target.id;
+  if (i == '.' && prev == '.') {
+    return
+  } 
   if (input == 0) {
     input = i;
   } else {
     input += i;
   }
-  let displayText = document.getElementById('display-text');
-  displayText.innerHTML = input;
+  prev = i;
+  updateDisplay(input);
 }
+
+function pushOperator(e) {
+  console.log(e.target.id);
+  op1 = input
+  input = '0';
+  operator = e.target.id;
+}
+
+function evalOperator() {
+  op2 = input;
+  res = op1 ? compute(Number(op1), Number(input)) : input;
+  op1 = res;
+  updateDisplay(res);
+}
+
+function compute(op1, op2) {
+  switch (operator) {
+    case '+':
+      return op1 + op2;
+      break;
+    case '-':
+      return op1 - op2;
+      break;
+    case '*':
+      return op1 * op2;
+      break;
+    case '/':
+      return op1 / op2;
+      break;
+    case '':
+      return op2;
+  }
+}
+
+function signOperator() {
+  input *= -1;
+  updateDisplay(input);
+}
+
+function clearEntry() {
+  input = 0;
+  updateDisplay();
+}
+
+function clearGlobal() {
+  op1 = '';
+  op2 = '';
+  prev = '';
+  operator = '';
+  input = '0';
+  updateDisplay();
+}
+
+function backspace() {
+  input = input.slice(0, -1);
+  if (input == '') {
+    input = '0';
+  }
+  updateDisplay(input);
+}
+
+function updateDisplay(num = 0) {
+  let displayText = document.getElementById('display-text');
+  displayText.innerHTML = num;
+}
+
+mapButtons();
