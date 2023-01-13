@@ -12,7 +12,9 @@ html {
 body {
   width: inherit;
   height: inherit;
-  background-color: rgb(225, 210, 190);
+  background-color: rgb(222, 208, 180);
+  /* background-image: url('background.png'); */
+  /* background-size: 150% 100%; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,7 +27,8 @@ body {
   grid-template-rows: 2fr 5fr;
   border-radius: 25px;
   background-color: rgb(30, 30, 30);
-  padding: .50%;
+  padding: 15px;
+  box-shadow: 0px 00px 0px 10px rgb(110, 110, 110);
 }
 
 #display {
@@ -50,8 +53,7 @@ body {
 
 button {
   font-size: 32px;
-  background-color: rgb(54, 54, 54);
-  color: rgb(235, 235, 235);
+  background-color: rgb(68, 68, 68);
   border-radius: 20px;
   border: none;
   transition: opacity .2s;
@@ -62,9 +64,25 @@ button:hover {
 }
 
 .num {
-  background-color: rgb(65, 65, 65);
+  background-color: rgb(99, 99, 99);
+}
+
+.operator {
+  background-color: rgb(66, 129, 237);
+}
+
+button, #display-text {
+  color: rgb(230, 230, 230);
+}
+
+#clear_entry, #clear_global {
+  background-color: rgb(235, 87, 18);
+}
+
+#delete {
+  background-color: rgb(235, 164, 34);
 }
 
 .evaluate {
-  background-color: rgb(65, 135, 255);
+  background-color: rgb(20, 195, 20);
 }

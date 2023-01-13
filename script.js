@@ -1,19 +1,12 @@
 let input = '0';
-let expression = '';
-let op1 = '';
-let op2 = '';
-let prev = '';
-let operator = '';
+let prevOperator = false;
+const stack = [];
 
 function mapButtons() {
   for(let i = 0; i <= 9; i++) {
     numBtns = document.getElementsByClassName('num');
     Array.from(numBtns).forEach(numBtn => numBtn.addEventListener('click', inputNumber));
-
   }
-
-  opBtns = document.getElementsByClassName('operator');
-  Array.from(opBtns).forEach(opBtn => opBtn.addEventListener('click', pushOperator));
 
   evalBtn = document.getElementById('=');
   evalBtn.addEventListener('click', evalOperator);
@@ -29,57 +22,85 @@ function mapButtons() {
 
   delBtn = document.getElementById('delete');
   delBtn.addEventListener('click', backspace);
-}
 
-function inputNumber(e) {
-  i = e.target.id;
-  if (i == '.' && prev == '.') {
-    return
-  } 
-  if (input == 0) {
-    input = i;
-  } else {
-    input += i;
+  opBtns = document.getElementsByClassName('operator');
+  Array.from(opBtns).forEach(opBtn => opBtn.addEventListener('click', pushOperator));
+
+  document.onkeypress = function (e) {
+
   }
-  prev = i;
-  updateDisplay(input);
 }
 
 function pushOperator(e) {
-  console.log(e.target.id);
-  op1 = input
-  input = '0';
-  operator = e.target.id;
+  op = e.target.id;
+  prev = stack.at(-1);
+  if (prevOperator) {
+    stack[stack.length - 1] = op;
+    console.log(stack);
+    return;
+  }
+  stack.push(Number(input));
+
+  if (stack.length == 3) {
+    res = compute();
+    stack.push(res);
+    input = 0;
+  }  
+  stack.push(op);
+  console.log(stack);
+  prevOperator = true;
+}
+
+function inputNumber(e) {
+  x = e.target.id;
+  prev = stack.at(-1);
+  if (x == '.') {
+    if (input.includes('.'))
+      return;
+    else
+      input += x;
+  } else if (input == 0 || prev == '+' || prev == '-' || prev == '*' || prev == '/') {
+    input = x;
+  } else {
+    input += x;
+  }
+  updateDisplay(input);
+  console.log(stack);
+  prevOperator = false;
 }
 
 function evalOperator() {
-  op2 = input;
-  res = op1 ? compute(Number(op1), Number(input)) : input;
-  op1 = res;
-  updateDisplay(res);
+  stack.push(Number(input));
+  res = compute();
+  input = res;
+  prevOperator = false;
+  console.log(stack);
 }
 
-function compute(op1, op2) {
-  switch (operator) {
+function compute() {
+  a = stack.shift();
+  opPrev = stack.shift();
+  b = stack.shift();
+  switch (opPrev) {
     case '+':
-      return op1 + op2;
+      res = a + b;
       break;
     case '-':
-      return op1 - op2;
+      res = a - b;
       break;
     case '*':
-      return op1 * op2;
+      res = a * b;
       break;
     case '/':
-      return op1 / op2;
+      res = a / b;
       break;
-    case '':
-      return op2;
   }
+  updateDisplay(res);
+  return res;
 }
 
 function signOperator() {
-  input *= -1;
+  input = (input * -1).toString();
   updateDisplay(input);
 }
 
@@ -89,19 +110,17 @@ function clearEntry() {
 }
 
 function clearGlobal() {
-  op1 = '';
-  op2 = '';
-  prev = '';
-  operator = '';
+  stack = [];
   input = '0';
   updateDisplay();
 }
 
 function backspace() {
+  if (input == '')
+    return;
   input = input.slice(0, -1);
-  if (input == '') {
+  if (input == '')
     input = '0';
-  }
   updateDisplay(input);
 }
 
